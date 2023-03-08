@@ -4,4 +4,5 @@ int main(void){
     printf("fuck\n");
     printf("test\n");
     printf("new test\n");
+    printf("last\n");
 }
