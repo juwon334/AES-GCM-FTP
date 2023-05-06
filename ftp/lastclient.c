@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     int result;
     int pid_number;
     char msg[MAXLINE];
+    int f1,f2;
     printf("############################################################################ \n");
     printf("#                                                                          # \n");
     printf("#   #### ##### ###          #####  #        #   #####  ##    #  #######    # \n");
@@ -67,16 +68,22 @@ int main(int argc, char *argv[])
 
 	TCP_Connect(AF_INET, ip, port, &sock);
        	TCP_Connect(AF_INET, ip, port+1, &sock1);
+	
 
-        if (sock == -1 && sock1 == -1)
+        if (sock == -1 || sock1 == -1)
         {
             printf("FTP 연결 실패 !!\n");
             exit(1);
         }
+
         else
         {
             // 연결 완료메시지 & pid number 받음
 	    recv(sock,msg,100,0);
+	    if(strcmp(msg,"FTP가 연결되었습니다!") != 0){
+	   		fprintf(stderr,"FTP가 연결에 실패했습니다.\n");
+			exit(-3);
+	    }
             recv(sock, &pid_number, 100, 0);
             printf("%s\n", &msg);
             printf("pid_number : %d\n", pid_number);
@@ -339,10 +346,11 @@ int FTP_pwd(int sock_msg, int sock_file)
     value = recv(sock_msg, &size, sizeof(int), 0);
     f = malloc(size);
     recv(sock_file, f, size, 0);
-    filehandle = open("pwd.txt", O_RDWR | O_CREAT, 0666);
-    write(filehandle, f, size);
-    close(filehandle);
-    system("cat pwd.txt");
+    //filehandle = open("pwd.txt", O_RDWR | O_CREAT, 0666);
+    //write(filehandle, f, size);
+    write(1, f, size);
+    //close(filehandle);
+    //system("cat pwd.txt");
     return value;
 }
 // ls 명령어
