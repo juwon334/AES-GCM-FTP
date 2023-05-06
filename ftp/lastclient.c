@@ -7,10 +7,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
-
+#include <unistd.h>
 #define MAXLINE 200
 
-void TCP_Connect(int af, char *servip, unsigned int port, int *sock);
+int TCP_Connect(int af, char *servip, unsigned int port, int *sock);
 int FTP_put(int sock_msg, int sock_file);
 int FTP_get(int sock_msg, int sock_file);
 int FTP_ls(int sock_msg, int sock_file);
@@ -229,13 +229,14 @@ int main(int argc, char *argv[])
   }
 
 // 연결 함수
-void TCP_Connect(int af, char *servip, unsigned int port, int *sock)
+int TCP_Connect(int af, char *servip, unsigned int port, int *sock)
 {
     struct sockaddr_in servaddr;
     if ((*sock = socket(af, SOCK_STREAM, 0)) < 0)
     {
         return -1;
     }
+
     bzero((char *)&servaddr, sizeof(servaddr));
     servaddr.sin_family = af;
     inet_pton(AF_INET, servip, &servaddr.sin_addr);
